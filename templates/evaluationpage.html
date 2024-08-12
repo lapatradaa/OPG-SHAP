@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPG - SHAP WEB</title>
+    <link rel="stylesheet" href="../static/css/styleevaluation.css">
+</head>
+
+<body>
+    <div class="colored-box"></div>
+    <nav>
+        <div class ="logo">
+            <a href="#">OPG-SHAP</a>
+         </div>
+<ul class="menu">
+      <li><a href="index.html">IMPORT MODELS</a></li>
+      <li><a href="shappage.html">SHAP</a></li>
+      <li><a href="detectionpage.html">DETECTION</a></li>
+      <li><a href="evaluationpage.html">EVALUATION</a> </li>
+</ul>
+    </nav>
+    <div class="horizontal-line"></div>
+    <div class="content">
+        <h2>EVALUATION</h2>
+        <p>Predict: {{ predict }}</p>
+        <p>Predict result: {{ predictresult}}</p>
+        <p>Negative values: {{ node0 }}</p>
+        <p>Positive values: {{ node1 }}</p>
+        <!-- <a href="/">Back to SHAP Page</a> -->
+        <div class="evaluationpage">
+            <img src="#" alt="#" style="width: 700px; height: 500px;">
+        </div>
+        <div class="button">
+            <a class="dowload" href="#">Download result</a>
+            <a class="again" href="#">Predict new image</a>
+            <!-- <p><input class="Next-btn" type="submit" value="Next"></p>  -->
+        </div>
+    
+    </body>
+    </html>
