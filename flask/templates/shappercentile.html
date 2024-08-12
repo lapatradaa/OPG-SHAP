@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPG - SHAP WEB</title>
+    <link rel="stylesheet" href="../static/css/styleshappercentile.css">
+    <style>
+        .negative-text {
+            color: blue;
+        }
+        .positive-text {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="colored-box"></div>
+    <nav>
+        <div class="logo">
+            <a href="#">OPG-SHAP</a>
+        </div>
+        <ul class="menu">
+            <li><a href="{{ url_for('index') }}">IMPORT MODELS</a></li>
+            <li><a href="{{ url_for('go2') }}">SHAP</a></li>
+            <li><a href="{{ url_for('shappercentile_page') }}" style="color: blue;">IMPORT MODELS</a></li>
+            <li><a href="{{ url_for('evaluationpage') }}">EVALUATION</a></li>
+        </ul>
+    </nav>
+    <div class="horizontal-line"></div>
+    <div class="back-button"></div>
+    <div class="content">
+        <h2>SHAP-PERCENTILE</h2>
+        <form action="/default_evaluationpage" method="POST">
+            <label for="frompredict"></label>
+            <input type="hidden" id="predict_input" name="predict_input" value="{{ predict_input1 }}">
+            <br><br>
+            <label for="node0_input" class="negative-text">Negative:</label>
+            <input type="text" name="node0_input" id="node0_input" value="{{ node0 }}">
+            <label for="node1_input" class="positive-text">Positive:</label>
+            <input type="text" name="node1_input" id="node1_input" value="{{ node1 }}">
+            <!-- <form action="/evaluationpage" method="POST"> -->
+    
+            <div class="container">
+                <div class="left">
+                    <div class="shapneg">
+                        <img id="displayedImageNeg" src="{{ grayscale_neg_image_url }}" alt="#" class="image">
+                        <div class="slidecontainer1">
+                            <input type="range" min="0" max="100" value="95" class="slider1" id="myRange1">
+                            <label for="myRange1" id="rangeValue1">95</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="shappos">
+                        <img id="displayedImagePos" src="{{ grayscale_pos_image_url }}" alt="#" class="image">
+                        <div class="slidecontainer2">
+                            <input type="range" min="1" max="100" value="95" class="slider2" id="myRange2">
+                            <label for="myRange2" id="rangeValue2">95</label>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+            <p><input class="Next-btn" type="submit" value="Next"></p>
+        </form>
+
+        <script>
+            function reloadImages() {
+                var negImgElement = document.getElementById('displayedImageNeg');
+                var posImgElement = document.getElementById('displayedImagePos');
+                var timestamp = new Date().getTime(); // Get current timestamp
+                negImgElement.src = '{{ grayscale_neg_image_url }}?' + timestamp; // Append timestamp to avoid caching
+                posImgElement.src = '{{ grayscale_pos_image_url }}?' + timestamp; // Append timestamp to avoid caching
+            }
+
+            function sendRangeValues() {
+                const value1 = document.getElementById('myRange1').value;
+                const value2 = document.getElementById('myRange2').value;
+                console.log("Value1: " + value1);
+                console.log("Value2: " + value2);
+                fetch('/percentile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ value1: value1, value2: value2 }),
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                const rangeSlider1 = document.getElementById('myRange1');
+                const rangeValue1 = document.getElementById('rangeValue1');
+                const rangeSlider2 = document.getElementById('myRange2');
+                const rangeValue2 = document.getElementById('rangeValue2');
+    
+                rangeSlider1.addEventListener('input', function() {
+                    rangeValue1.textContent = rangeSlider1.value;
+                });
+    
+                rangeSlider2.addEventListener('input', function() {
+                    rangeValue2.textContent = rangeSlider2.value;
+                });
+
+                rangeSlider1.addEventListener('change', sendRangeValues);
+                rangeSlider2.addEventListener('change', sendRangeValues);
+
+                // Initial load
+                sendRangeValues();
+                reloadImages();
+                setInterval(reloadImages, 1000);
+            });
+        </script>
+    </div>
+</body>
+</html>
